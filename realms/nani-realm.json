@@ -284,7 +284,7 @@
   },
   "clients": [
     {
-      "clientId": "commerce-bff",
+      "clientId": "commerce-bff-nani",
       "name": "Nani Perfumes (site)",
       "description": "BFF do site: guarda os tokens no servidor",
       "enabled": true,
@@ -318,6 +318,37 @@
             "access.token.claim": "true",
             "id.token.claim": "false",
             "introspection.token.claim": "true"
+          }
+        },
+        {
+          "name": "papeis",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "consentRequired": false,
+          "config": {
+            "claim.name": "roles",
+            "jsonType.label": "String",
+            "multivalued": "true",
+            "id.token.claim": "true",
+            "access.token.claim": "false",
+            "userinfo.token.claim": "true",
+            "introspection.token.claim": "false"
+          }
+        },
+        {
+          "name": "permissoes",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-client-role-mapper",
+          "consentRequired": false,
+          "config": {
+            "usermodel.clientRoleMapping.clientId": "commerce-api",
+            "claim.name": "permissions",
+            "jsonType.label": "String",
+            "multivalued": "true",
+            "id.token.claim": "true",
+            "access.token.claim": "false",
+            "userinfo.token.claim": "true",
+            "introspection.token.claim": "false"
           }
         }
       ]

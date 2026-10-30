@@ -7,7 +7,7 @@ Orienta o Claude ao trabalhar neste repositório.
 `commerce-auth`: configuração do **Keycloak** (login, cadastro, senhas, 2 etapas, papéis e permissões) da plataforma commerce. **Não há código Java aqui.** Arquitetura completa no projeto: `claude/roadmap-mvp.md` (seção "Arquitetura") e `claude/contrato-api.md`.
 
 - **Um realm por loja.** `nani` = Nani Perfumes. A loja de roupas terá o próprio realm (contas separadas).
-- O `commerce-bff` é o único cliente que faz login (código de autorização + PKCE). O token vai para a `commerce-api` (`aud`), com papéis e permissões.
+- O `commerce-bff-nani` é o único cliente que faz login (código de autorização + PKCE). O token vai para a `commerce-api` (`aud`), com papéis e permissões.
 - Senha só é digitada na página do Keycloak (tema `nani`), nunca no Angular nem no BFF.
 
 ## Regras
