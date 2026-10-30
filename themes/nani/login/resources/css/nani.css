@@ -1,0 +1,216 @@
+/*
+ * Tela de login da Nani Perfumes (Keycloak, tema "base").
+ * Mesmas cores e fontes do commerce-web (src/styles.scss). Celular primeiro:
+ * cartão ocupa a largura toda; a partir de 480px vira um cartão centralizado.
+ */
+@font-face { font-family: 'DM Sans'; font-weight: 400; font-display: swap; src: url('../fonts/dm-sans-latin-400-normal.woff2') format('woff2'); }
+@font-face { font-family: 'DM Sans'; font-weight: 500; font-display: swap; src: url('../fonts/dm-sans-latin-500-normal.woff2') format('woff2'); }
+@font-face { font-family: 'DM Sans'; font-weight: 600; font-display: swap; src: url('../fonts/dm-sans-latin-600-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Italiana'; font-weight: 400; font-display: swap; src: url('../fonts/italiana-latin-400-normal.woff2') format('woff2'); }
+
+:root {
+  --font-display: 'Italiana', Georgia, 'Times New Roman', serif;
+  --font-ui: 'DM Sans', 'Segoe UI', Helvetica, sans-serif;
+  --background: #f9f6f2;
+  --foreground: #17130e;
+  --card: #fffdfb;
+  --muted: #f2ece4;
+  --muted-foreground: #625950;
+  --border: #dbd3c8;
+  --gold: #b88c4f;
+  --gold-text: #86652f;
+  --wine: #8c2f39;
+  --success: #2a6040;
+  --radius: 6px;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--muted);
+  color: var(--foreground);
+  font-family: var(--font-ui);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px max(16px, env(safe-area-inset-right)) 40px max(16px, env(safe-area-inset-left));
+}
+
+/* O contêiner do tema base encolhia para o tamanho do conteúdo: largura fixa do cartão */
+body > div { width: 100%; max-width: 440px; }
+
+/* Logo no lugar do nome do realm */
+#kc-header { width: 100%; max-width: 440px; margin-bottom: 20px; }
+#kc-header-wrapper {
+  height: 96px;
+  background: url('../img/logo-nani-full.webp') center / contain no-repeat;
+  color: transparent;
+  font-size: 0;
+  overflow: hidden;
+}
+
+/* Cartão */
+#kc-header + div {
+  width: 100%;
+  max-width: 440px;
+  padding: 28px 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+}
+@media (min-width: 480px) {
+  #kc-header + div { padding: 32px 28px; }
+}
+
+#kc-page-title {
+  margin: 0 0 20px;
+  font-family: var(--font-display);
+  font-size: 1.875rem;
+  font-weight: 400;
+  line-height: 1.2;
+  text-align: center;
+}
+
+/* Seletor de idioma (só pt-BR): esconder */
+#kc-locale { display: none; }
+
+/* Formulários */
+form { display: flex; flex-direction: column; gap: 16px; margin: 0; }
+form > div { display: flex; flex-direction: column; gap: 6px; }
+
+label {
+  font-size: 0.8125rem;
+  color: var(--muted-foreground);
+}
+
+input[type='text'],
+input[type='email'],
+input[type='password'],
+input[type='tel'] {
+  width: 100%;
+  height: 48px;
+  padding: 0 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--background);
+  color: var(--foreground);
+  font: inherit;
+}
+input:focus-visible,
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+input[aria-invalid='true'] { border-color: var(--wine); }
+
+/* Botão principal (Entrar, Criar conta, Enviar) */
+input[type='submit'],
+button[type='submit'] {
+  width: 100%;
+  height: 48px;
+  margin-top: 6px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--foreground);
+  color: var(--background);
+  font: 600 0.9375rem var(--font-ui);
+  letter-spacing: 0.02em;
+  cursor: pointer;
+}
+input[type='submit']:hover,
+button[type='submit']:hover { background: #2e2820; }
+
+/* Botão de mostrar senha do tema base: dentro do campo, à direita.
+   O ícone original depende de uma fonte que não carregamos; usamos o texto
+   do aria-label ("Mostrar senha" / "Ocultar senha"), que o script do Keycloak troca. */
+div:has(> #password),
+div:has(> #password-new),
+div:has(> #password-confirm) {
+  position: relative;
+  display: flex;
+}
+button[data-password-toggle] {
+  position: absolute;
+  inset: 1px 1px 1px auto;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  background: transparent;
+  color: var(--gold-text);
+  font: 500 0.8125rem var(--font-ui);
+  cursor: pointer;
+}
+button[data-password-toggle] i { display: none; }
+button[data-password-toggle]::before { content: attr(aria-label); }
+#password, #password-new, #password-confirm { padding-right: 120px; }
+
+/* Links (esqueci a senha, criar conta, voltar) */
+a { color: var(--gold-text); text-decoration: underline; text-underline-offset: 2px; }
+#kc-form-options,
+#kc-registration,
+#kc-info,
+#kc-info-wrapper {
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+  text-align: center;
+}
+#kc-registration { margin-top: 22px; }
+
+/* Mensagens (erro, aviso, sucesso) */
+.alert-error, .alert-warning, .alert-success, .alert-info,
+[class*='alert-'] {
+  margin: 0 0 16px;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  background: var(--muted);
+  font-size: 0.875rem;
+}
+.alert-error, [class*='alert-error'] { color: var(--wine); }
+.alert-success, [class*='alert-success'] { color: var(--success); }
+span[id^='input-error'], .kc-feedback-text { font-size: 0.8125rem; }
+span[id^='input-error'] { color: var(--wine); }
+
+/* "Continuar com Google" */
+#kc-social-providers { margin-top: 24px; }
+#kc-social-providers hr { border: 0; border-top: 1px solid var(--border); }
+#kc-social-providers h2,
+#kc-social-providers h4 {
+  margin: 12px 0;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--muted-foreground);
+  text-align: center;
+}
+#kc-social-providers ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+#kc-social-providers a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 48px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--foreground);
+  font-weight: 500;
+  text-decoration: none;
+}
+#kc-social-providers a:hover { border-color: var(--gold); }
+
+/* Código de 2 etapas: QR code centralizado */
+#kc-totp-secret-qr-code { display: block; margin: 12px auto; max-width: 200px; }
+ol, ul { padding-left: 20px; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}

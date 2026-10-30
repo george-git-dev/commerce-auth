@@ -1,0 +1,7 @@
+# Segredos locais (copiar de .env.example)
+.env
+# Exportações locais do Keycloak (podem conter dados de usuários)
+export/
+*.log
+.idea/
+.vscode/

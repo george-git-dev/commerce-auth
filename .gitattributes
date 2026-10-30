@@ -1,0 +1,4 @@
+# Scripts e configs rodam dentro de containers Linux: sempre LF, mesmo no Windows.
+* text=auto eol=lf
+*.woff2 binary
+*.webp binary

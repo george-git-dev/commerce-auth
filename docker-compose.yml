@@ -1,0 +1,100 @@
+# Ambiente de DESENVOLVIMENTO do commerce-auth (Keycloak).
+# Subir:   docker compose up -d --build
+# Login:   http://localhost:8180/auth/realms/nani/account
+# Console: http://localhost:8180/auth/admin   (só na sua máquina)
+# E-mails: http://localhost:8025               (Mailpit)
+name: commerce-auth
+
+services:
+  postgres:
+    image: postgres:17.6-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: commerce
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?defina no .env}
+      KEYCLOAK_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD:?defina no .env}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./postgres/init:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "127.0.0.1:5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d commerce"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  mailpit:
+    image: axllent/mailpit:v1.27.0
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8025:8025"
+
+  keycloak:
+    build: .
+    image: commerce-auth:dev
+    pull_policy: build
+    # Fica rodando em segundo plano e volta sozinho quando o Docker Desktop abre.
+    restart: unless-stopped
+    # start-dev: sem cache de tema (edite o CSS e recarregue a página).
+    command: ["start-dev", "--import-realm"]
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/commerce
+      KC_DB_SCHEMA: keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
+      KC_HOSTNAME: ${KC_HOSTNAME:-http://localhost:8180/auth}
+      KC_HTTP_RELATIVE_PATH: /auth
+      KC_HEALTH_ENABLED: "true"
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN_USER:?defina no .env}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:?defina no .env}
+      # Lidos pelo realms/nani-realm.json (placeholders ${...})
+      COMMERCE_BFF_CLIENT_SECRET: ${COMMERCE_BFF_CLIENT_SECRET:?defina no .env}
+      COMMERCE_BFF_REDIRECT_URI: ${COMMERCE_BFF_REDIRECT_URI}
+      COMMERCE_BFF_POST_LOGOUT_URI: ${COMMERCE_BFF_POST_LOGOUT_URI}
+      SMTP_HOST: ${SMTP_HOST:-mailpit}
+      SMTP_PORT: ${SMTP_PORT:-1025}
+      SMTP_FROM: ${SMTP_FROM}
+    volumes:
+      - ./realms:/opt/keycloak/data/import:ro
+      - ./themes/nani:/opt/keycloak/themes/nani:ro
+    ports:
+      - "127.0.0.1:8180:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      # A imagem não tem curl: pergunta direto na porta de gestão (9000).
+      test:
+        - CMD-SHELL
+        - >-
+          exec 3<>/dev/tcp/127.0.0.1/9000 &&
+          printf 'GET /auth/health/ready HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n' >&3 &&
+          grep -q '"UP"' <&3
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+
+  # Cria as contas de teste (só desenvolvimento). Roda uma vez e termina.
+  keycloak-seed:
+    image: commerce-auth:dev
+    # Usa a imagem construída pelo serviço keycloak (não existe em registro nenhum).
+    pull_policy: never
+    entrypoint: ["/bin/bash", "/scripts/seed-dev-users.sh"]
+    environment:
+      KC_URL: http://keycloak:8080/auth
+      KEYCLOAK_ADMIN_USER: ${KEYCLOAK_ADMIN_USER}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      DEV_USERS_PASSWORD: ${DEV_USERS_PASSWORD:-12345678}
+    volumes:
+      - ./scripts:/scripts:ro
+    depends_on:
+      keycloak:
+        condition: service_healthy
+    restart: "no"
+
+volumes:
+  pgdata:

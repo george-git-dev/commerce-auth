@@ -1,0 +1,339 @@
+{
+  "realm": "nani",
+  "enabled": true,
+  "displayName": "Nani Perfumes",
+  "sslRequired": "external",
+  "loginTheme": "nani",
+  "internationalizationEnabled": true,
+  "supportedLocales": [
+    "pt-BR"
+  ],
+  "defaultLocale": "pt-BR",
+  "registrationAllowed": true,
+  "registrationEmailAsUsername": true,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "editUsernameAllowed": false,
+  "resetPasswordAllowed": true,
+  "verifyEmail": true,
+  "rememberMe": false,
+  "passwordPolicy": "length(8) and maxLength(64) and notEmail and notUsername",
+  "bruteForceProtected": true,
+  "permanentLockout": false,
+  "failureFactor": 5,
+  "waitIncrementSeconds": 60,
+  "maxFailureWaitSeconds": 900,
+  "maxDeltaTimeSeconds": 43200,
+  "quickLoginCheckMilliSeconds": 1000,
+  "minimumQuickLoginWaitSeconds": 60,
+  "accessTokenLifespan": 900,
+  "ssoSessionIdleTimeout": 604800,
+  "ssoSessionMaxLifespan": 2592000,
+  "revokeRefreshToken": true,
+  "refreshTokenMaxReuse": 0,
+  "actionTokenGeneratedByUserLifespan": 1800,
+  "eventsEnabled": true,
+  "eventsExpiration": 7776000,
+  "adminEventsEnabled": true,
+  "adminEventsDetailsEnabled": false,
+  "smtpServer": {
+    "host": "${SMTP_HOST}",
+    "port": "${SMTP_PORT}",
+    "from": "${SMTP_FROM}",
+    "fromDisplayName": "Nani Perfumes",
+    "auth": "false",
+    "ssl": "false",
+    "starttls": "false"
+  },
+  "roles": {
+    "realm": [
+      {
+        "name": "default-roles-nani",
+        "composite": true,
+        "composites": {
+          "realm": [
+            "offline_access",
+            "uma_authorization",
+            "ROLE_CUSTOMER"
+          ]
+        }
+      },
+      {
+        "name": "offline_access"
+      },
+      {
+        "name": "uma_authorization"
+      },
+      {
+        "name": "ROLE_CUSTOMER",
+        "description": "Cliente (todo cadastro nasce com este perfil)",
+        "composite": true,
+        "composites": {
+          "client": {
+            "commerce-api": [
+              "shop:checkout"
+            ]
+          }
+        }
+      },
+      {
+        "name": "ROLE_AFFILIATE",
+        "description": "Afiliado aprovado",
+        "composite": true,
+        "composites": {
+          "client": {
+            "commerce-api": [
+              "affiliate:area"
+            ]
+          }
+        }
+      },
+      {
+        "name": "ROLE_VIEWER",
+        "description": "Equipe: só leitura do backoffice",
+        "composite": true,
+        "composites": {
+          "client": {
+            "commerce-api": [
+              "admin:access",
+              "dashboard:view",
+              "orders:view",
+              "products:view",
+              "stock:view",
+              "suppliers:view",
+              "customers:view",
+              "reports:view",
+              "affiliates:view",
+              "audit:view",
+              "settings:view"
+            ]
+          }
+        }
+      },
+      {
+        "name": "ROLE_ADMIN",
+        "description": "Equipe: tudo no backoffice, menos gerenciar a equipe",
+        "composite": true,
+        "composites": {
+          "client": {
+            "commerce-api": [
+              "admin:access",
+              "dashboard:view",
+              "orders:view",
+              "products:view",
+              "stock:view",
+              "suppliers:view",
+              "customers:view",
+              "reports:view",
+              "affiliates:view",
+              "audit:view",
+              "settings:view",
+              "orders:edit",
+              "products:edit",
+              "stock:edit",
+              "suppliers:edit",
+              "customers:edit",
+              "customers:sensitive",
+              "approvals:view",
+              "approvals:edit",
+              "affiliates:pay",
+              "settings:edit"
+            ]
+          }
+        }
+      },
+      {
+        "name": "ROLE_SUPER_ADMIN",
+        "description": "Equipe: tudo, inclusive gerenciar a equipe",
+        "composite": true,
+        "composites": {
+          "client": {
+            "commerce-api": [
+              "admin:access",
+              "dashboard:view",
+              "orders:view",
+              "products:view",
+              "stock:view",
+              "suppliers:view",
+              "customers:view",
+              "reports:view",
+              "affiliates:view",
+              "audit:view",
+              "settings:view",
+              "orders:edit",
+              "products:edit",
+              "stock:edit",
+              "suppliers:edit",
+              "customers:edit",
+              "customers:sensitive",
+              "approvals:view",
+              "approvals:edit",
+              "affiliates:pay",
+              "settings:edit",
+              "team:manage"
+            ]
+          }
+        }
+      }
+    ],
+    "client": {
+      "commerce-api": [
+        {
+          "name": "shop:checkout",
+          "description": "Comprar na loja"
+        },
+        {
+          "name": "affiliate:area",
+          "description": "Área do afiliado aprovado"
+        },
+        {
+          "name": "admin:access",
+          "description": "Entrar no backoffice"
+        },
+        {
+          "name": "dashboard:view",
+          "description": "Ver o painel de vendas"
+        },
+        {
+          "name": "orders:view",
+          "description": "Ver pedidos"
+        },
+        {
+          "name": "products:view",
+          "description": "Ver produtos"
+        },
+        {
+          "name": "stock:view",
+          "description": "Ver estoque"
+        },
+        {
+          "name": "suppliers:view",
+          "description": "Ver fornecedores"
+        },
+        {
+          "name": "customers:view",
+          "description": "Ver clientes"
+        },
+        {
+          "name": "reports:view",
+          "description": "Gerar relatórios"
+        },
+        {
+          "name": "affiliates:view",
+          "description": "Ver afiliados e comissões"
+        },
+        {
+          "name": "audit:view",
+          "description": "Ver auditoria"
+        },
+        {
+          "name": "settings:view",
+          "description": "Ver configurações"
+        },
+        {
+          "name": "orders:edit",
+          "description": "Alterar pedidos"
+        },
+        {
+          "name": "products:edit",
+          "description": "Alterar produtos"
+        },
+        {
+          "name": "stock:edit",
+          "description": "Alterar estoque"
+        },
+        {
+          "name": "suppliers:edit",
+          "description": "Alterar fornecedores"
+        },
+        {
+          "name": "customers:edit",
+          "description": "Alterar clientes"
+        },
+        {
+          "name": "customers:sensitive",
+          "description": "Ver CPF e telefone completos"
+        },
+        {
+          "name": "approvals:view",
+          "description": "Ver aprovações"
+        },
+        {
+          "name": "approvals:edit",
+          "description": "Aprovar e reprovar"
+        },
+        {
+          "name": "affiliates:pay",
+          "description": "Pagar comissões"
+        },
+        {
+          "name": "settings:edit",
+          "description": "Alterar configurações"
+        },
+        {
+          "name": "team:manage",
+          "description": "Gerenciar a equipe"
+        }
+      ]
+    }
+  },
+  "defaultRole": {
+    "name": "default-roles-nani",
+    "composite": true,
+    "clientRole": false
+  },
+  "clients": [
+    {
+      "clientId": "commerce-bff",
+      "name": "Nani Perfumes (site)",
+      "description": "BFF do site: guarda os tokens no servidor",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "${COMMERCE_BFF_CLIENT_SECRET}",
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "frontchannelLogout": false,
+      "redirectUris": [
+        "${COMMERCE_BFF_REDIRECT_URI}"
+      ],
+      "webOrigins": [],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "${COMMERCE_BFF_POST_LOGOUT_URI}",
+        "use.refresh.tokens": "true",
+        "backchannel.logout.session.required": "true"
+      },
+      "protocolMappers": [
+        {
+          "name": "audiencia-commerce-api",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "included.client.audience": "commerce-api",
+            "access.token.claim": "true",
+            "id.token.claim": "false",
+            "introspection.token.claim": "true"
+          }
+        }
+      ]
+    },
+    {
+      "clientId": "commerce-api",
+      "name": "commerce-api",
+      "description": "Destino (aud) dos tokens e dono das permissões; não faz login",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "bearerOnly": true,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false
+    }
+  ]
+}
