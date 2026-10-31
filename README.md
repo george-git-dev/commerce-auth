@@ -26,7 +26,7 @@ docker compose up -d --build
 | http://localhost:8180/auth/admin | Console de administração (usuário/senha do `.env`) — **só local** |
 | http://localhost:8025 | Mailpit: e-mails de verificação e de senha |
 
-Contas de teste (senha `DEV_USERS_PASSWORD` do `.env`): `superadmin@`, `admin@`, `viewer@` (equipe — pedem 2 etapas no primeiro login), `ana@`, `bia@`, `julia.afiliada@`, `vizinho@` (todas `@email.com`).
+Contas de teste (senha `DEV_USERS_PASSWORD` do `.env`): `superadmin@`, `admin@`, `viewer@` (equipe — o login exige código de 2 etapas; no primeiro acesso obriga a configurar), `ana@`, `bia@`, `julia.afiliada@`, `vizinho@` (todas `@email.com`).
 
 **O realm só é importado se ainda não existir.** Mudou o `nani-realm.json`? Recrie do zero:
 

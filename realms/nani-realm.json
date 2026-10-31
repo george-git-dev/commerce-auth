@@ -366,5 +366,99 @@
       "directAccessGrantsEnabled": false,
       "serviceAccountsEnabled": false
     }
-  ]
+  ],
+  "authenticationFlows": [
+    {
+      "alias": "nani browser",
+      "description": "Login da Nani: sessão (cookie), provedor externo (Google, B2.3) ou formulário",
+      "providerId": "basic-flow",
+      "topLevel": true,
+      "builtIn": false,
+      "authenticationExecutions": [
+        {
+          "authenticator": "auth-cookie",
+          "authenticatorFlow": false,
+          "requirement": "ALTERNATIVE",
+          "priority": 10,
+          "userSetupAllowed": false
+        },
+        {
+          "authenticator": "identity-provider-redirector",
+          "authenticatorFlow": false,
+          "requirement": "ALTERNATIVE",
+          "priority": 25,
+          "userSetupAllowed": false
+        },
+        {
+          "authenticatorFlow": true,
+          "requirement": "ALTERNATIVE",
+          "priority": 30,
+          "flowAlias": "nani browser formulario",
+          "userSetupAllowed": false
+        }
+      ]
+    },
+    {
+      "alias": "nani browser formulario",
+      "description": "E-mail e senha; depois, código de 2 etapas para a equipe",
+      "providerId": "basic-flow",
+      "topLevel": false,
+      "builtIn": false,
+      "authenticationExecutions": [
+        {
+          "authenticator": "auth-username-password-form",
+          "authenticatorFlow": false,
+          "requirement": "REQUIRED",
+          "priority": 10,
+          "userSetupAllowed": false
+        },
+        {
+          "authenticatorFlow": true,
+          "requirement": "CONDITIONAL",
+          "priority": 20,
+          "flowAlias": "nani browser 2 etapas da equipe",
+          "userSetupAllowed": false
+        }
+      ]
+    },
+    {
+      "alias": "nani browser 2 etapas da equipe",
+      "description": "Quem acessa o backoffice (permissão admin:access) sempre digita o código; sem código configurado, é obrigado a configurar",
+      "providerId": "basic-flow",
+      "topLevel": false,
+      "builtIn": false,
+      "authenticationExecutions": [
+        {
+          "authenticator": "conditional-user-role",
+          "authenticatorFlow": false,
+          "requirement": "REQUIRED",
+          "priority": 10,
+          "userSetupAllowed": false,
+          "authenticatorConfig": "acessa-backoffice"
+        },
+        {
+          "authenticator": "auth-otp-form",
+          "authenticatorFlow": false,
+          "requirement": "REQUIRED",
+          "priority": 20,
+          "userSetupAllowed": false
+        }
+      ]
+    }
+  ],
+  "authenticatorConfig": [
+    {
+      "alias": "acessa-backoffice",
+      "config": {
+        "condUserRole": "commerce-api.admin:access",
+        "negate": "false"
+      }
+    }
+  ],
+  "browserFlow": "nani browser",
+  "otpPolicyType": "totp",
+  "otpPolicyAlgorithm": "HmacSHA1",
+  "otpPolicyDigits": 6,
+  "otpPolicyPeriod": 30,
+  "otpPolicyLookAheadWindow": 1
 }
